@@ -4,6 +4,8 @@ Um script para, de uma lista .csv, pegar palavras e frases em contexto e suas re
 
 Input:
 
+| palavras iniciais |
+|---|
 | предложение |
 | достаточно|
 | трудно|
@@ -11,6 +13,8 @@ Input:
 
 Output:
 
+| palavras iniciais | tradução | frase | tradução da frase |
+|---|----|----|----|
 | предложение | suggestion | três exemplos em russo | três exemplos em inglês |*
 | достаточно| enough\*\* |três exemplos em russo | três exemplos em inglês |
 | трудно| difficult |três exemplos em russo | três exemplos em inglês |
