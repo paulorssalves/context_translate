@@ -3,16 +3,18 @@ import itertools
 import csv
 from reverso_context_api import Client
 from time import sleep
-
-# TODO: dar a esse programa prompts para não precisar deixar nada hard-coded
+import readline
 
 # número de itens a serem lidos
 # interessante não fazer mais do que trinta, no máximo. Mas idealmente, cerca de 15.
-REQUEST_NUMBER=2
+REQUEST_NUMBER=int(input("Insira o número de palavras a buscar: "))
+
+# filename autocompletion
+readline.parse_and_bind("tab: complete")
 
 # arquivos de entrada e saída
-INPUT_FILE="slujenie.csv"
-OUTPUT_FILE="slujenie_out.csv"
+INPUT_FILE=input("Insira o nome do arquivo de entrada: ")
+OUTPUT_FILE=input("Insira o nome do arquivo de saída: ")
 
 # línguas
 client = Client("ru", "en")
@@ -23,17 +25,19 @@ f = pd.read_csv(INPUT_FILE, header=None, names=['word(s)'])
 # parte do arquivo a ser lido
 head = f.head(REQUEST_NUMBER)
 
-# TODO: adicionar sleep a cada 20 iterações
 data = []
+iterations = 0 
 for cell in head.iteritems():
+    iterations += 1
     for words in cell[1]:
         l = []
         l.append(words)
         l += list(itertools.islice(client.get_translation_samples(words, cleanup=True), 3))
         l.append(list(list(client.get_translations(words)))[:5])
         data.append(l)
-        #data += list(list(itertools.islice(client.get_translation_samples(words, cleanup=True), 3)))
-
+        if iterations >= 15:
+            sleep(30)
+            iterations = 0
 
 def gen_translations(data):
     # palavras 
