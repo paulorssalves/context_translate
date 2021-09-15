@@ -4,15 +4,26 @@ import csv
 from reverso_context_api import Client
 from time import sleep
 
-REQUEST_NUMBER=2
-OUTPUT_FILE="slujenie_out.csv"
-INPUT_FILE="slujenie.csv"
+# TODO: dar a esse programa prompts para não precisar deixar nada hard-coded
 
+# número de itens a serem lidos
+# interessante não fazer mais do que trinta, no máximo. Mas idealmente, cerca de 15.
+REQUEST_NUMBER=2
+
+# arquivos de entrada e saída
+INPUT_FILE="slujenie.csv"
+OUTPUT_FILE="slujenie_out.csv"
+
+# línguas
 client = Client("ru", "en")
 
+# arquivo a ser lido
 f = pd.read_csv(INPUT_FILE, header=None, names=['word(s)'])
+
+# parte do arquivo a ser lido
 head = f.head(REQUEST_NUMBER)
 
+# TODO: adicionar sleep a cada 20 iterações
 data = []
 for cell in head.iteritems():
     for words in cell[1]:
@@ -21,16 +32,21 @@ for cell in head.iteritems():
         l += list(itertools.islice(client.get_translation_samples(words, cleanup=True), 3))
         l.append(list(list(client.get_translations(words)))[:5])
         data.append(l)
-        sleep(5)
         #data += list(list(itertools.islice(client.get_translation_samples(words, cleanup=True), 3)))
 
 
 def gen_translations(data):
-    word_list = []
-    phrase_list= []
+    # palavras 
     originals = []
-    trans_list=[]
+    originals_translated=[]
 
+    # frases 
+    target_phrases = []
+    translated_phrases= []
+
+    # a partir daqui, estamos juntando todas as strings em uma só e separando-as
+    # apenas com uma newline. Por quê? Pra vincular todas as (cinco) traduções
+    # da palavra e suas frases e as traduções desta a uma mesma célula
     for group in data:
         break_n=0
         p = ""
@@ -45,6 +61,8 @@ def gen_translations(data):
                 if break_n <= 2:
                     p+="\n"
                     t+="\n"
+
+            # pode ser que não haja exemplo
             except IndexError:
                 pass
                     
@@ -55,15 +73,17 @@ def gen_translations(data):
                 if t_break_n <= 4: 
                     wt+="\n"
                 wt+=item
+
+        # pode ser que não haja exemplo
         except IndexError:
             pass
 
         originals.append(group[0])
-        trans_list.append(wt)
-        word_list.append(p)
-        phrase_list.append(t)
+        originals_translated.append(wt)
+        target_phrases.append(p)
+        translated_phrases.append(t)
 
-    g = {'col0':originals, 'col1': trans_list,'col2':word_list, 'col3':phrase_list}
+    g = {'col0':originals, 'col1': originals_translated,'col2':target_phrases, 'col3':translated_phrases}
 
     return g
 
