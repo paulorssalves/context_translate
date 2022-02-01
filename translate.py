@@ -89,7 +89,7 @@ for cell in head.iteritems():
         l = []
         l.append(words)
         print(words)
-        filter_list = list(list(client.get_translations(words, source_lang="ru", target_lang="en")))[:3]
+        filter_list = list(list(client.get_translations(words, source_lang="ru", target_lang="en")))[:5]
         if filter_list == []:
             continue
         else:
