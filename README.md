@@ -31,6 +31,7 @@ Palavras que não têm ao menos uma opção de tradução no Reverso Context ser
   - Enxugar código:
     - Pegar as partes que fazem requests para os sites e transformá-las em funções
     - Executar processo central dentro de um `if __name__ == "__main__"` 
+    - Transformar em função também as partes que convertem os DataFrames em .csv
 
 ----
 
