@@ -33,6 +33,7 @@ Palavras que não têm ao menos uma opção de tradução no Reverso Context ser
     - Executar processo central dentro de um `if __name__ == "__main__"` 
     - Transformar em função também as partes que convertem os DataFrames em .csv
     - Adicionar opções de línguas de acordo com os idiomas disponíveis no Context Reverso
+    	- Incluir tais opções no prompt
 
 ----
 
