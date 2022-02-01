@@ -8,6 +8,7 @@ import readline
 # número de itens a serem lidos
 # interessante não fazer mais do que trinta, no máximo. Mas idealmente, cerca de 15.
 REQUEST_NUMBER=int(input("Insira o número de palavras a buscar: "))
+# REQUEST_NUMBER=278
 
 # filename autocompletion
 readline.parse_and_bind("tab: complete")
@@ -15,6 +16,8 @@ readline.parse_and_bind("tab: complete")
 # arquivos de entrada e saída
 INPUT_FILE=input("Insira o nome do arquivo de entrada: ")
 OUTPUT_FILE=input("Insira o nome do arquivo de saída: ")
+# INPUT_FILE="russian-words.csv"
+# OUTPUT_FILE="out.csv"
 
 # línguas
 client = Client("ru", "en")
@@ -24,20 +27,6 @@ f = pd.read_csv(INPUT_FILE, header=None, names=['word(s)'])
 
 # parte do arquivo a ser lido
 head = f.head(REQUEST_NUMBER)
-
-data = []
-iterations = 0 
-for cell in head.iteritems():
-    iterations += 1
-    for words in cell[1]:
-        l = []
-        l.append(words)
-        l += list(itertools.islice(client.get_translation_samples(words, cleanup=True), 3))
-        l.append(list(list(client.get_translations(words)))[:5])
-        data.append(l)
-        if iterations >= 15:
-            sleep(30)
-            iterations = 0
 
 def gen_translations(data):
     # palavras 
@@ -91,8 +80,28 @@ def gen_translations(data):
 
     return g
 
-k = gen_translations(data)
-df = pd.DataFrame(k)
-df.set_index('col0', inplace=True)
-df.to_csv(OUTPUT_FILE, encoding="utf-8", mode="w", header=False)
-
+iterations = 0 
+for cell in head.iteritems():
+    print(cell)
+    for words in cell[1]:
+        iterations += 1
+        data = []
+        l = []
+        l.append(words)
+        print(words)
+        filter_list = list(list(client.get_translations(words, source_lang="ru", target_lang="en")))[:3]
+        if filter_list == []:
+            continue
+        else:
+            l += list(itertools.islice(client.get_translation_samples(words, cleanup=True, source_lang="ru", target_lang="en"), 3))
+            l.append(filter_list)
+            data.append(l)
+            k = gen_translations(data)
+            df = pd.DataFrame(k)
+            df.set_index('col0', inplace=True)
+            df.to_csv(OUTPUT_FILE, encoding="utf-8", mode="a", header=False)
+        if iterations >= 20:
+            for i in range(1,31):
+                print("sleeping... {}".format(i))
+                sleep(1)
+            iterations = 0
