@@ -1,10 +1,11 @@
 import pandas as pd
 import itertools
-import csv
+from wiktionaryparser import WiktionaryParser
 from reverso_context_api import Client
 from time import sleep
 import readline
 
+parser = WiktionaryParser()
 # número de itens a serem lidos
 # interessante não fazer mais do que trinta, no máximo. Mas idealmente, cerca de 15.
 REQUEST_NUMBER=int(input("Insira o número de palavras a buscar: "))
@@ -91,17 +92,31 @@ for cell in head.iteritems():
         print(words)
         filter_list = list(list(client.get_translations(words, source_lang="ru", target_lang="en")))[:5]
         if filter_list == []:
-            continue
+            word = parser.fetch(words)
+            if word == []:
+                continue
+            elif word[0]['definitions'] == []: 
+                # checando se a palavra existe no Wiktionary
+                # se não existe, ignorá-la
+                continue 
+            else: 
+                # se existe, separar dados sobre ela em uma lista .csv separada 
+                word_data = word[0]['definitions'][0]['text'] 
+                organized_word_data= {'word': [word_data[0]], 'details': [word_data[1]]}
+                word_dataframe = pd.DataFrame(organized_word_data)
+                word_dataframe.set_index('word',inplace=True)
+                word_dataframe.to_csv(OUTPUT_FILE+".alt.csv", encoding="utf-8", mode="a", header=False)
+
         else:
             l += list(itertools.islice(client.get_translation_samples(words, cleanup=True, source_lang="ru", target_lang="en"), 3))
             l.append(filter_list)
             data.append(l)
-            k = gen_translations(data)
-            df = pd.DataFrame(k)
+            organized_data = gen_translations(data) # dados obtidos no context reverso separados em quatro diferentes colunas
+            df = pd.DataFrame(organized_data)
             df.set_index('col0', inplace=True)
             df.to_csv(OUTPUT_FILE, encoding="utf-8", mode="a", header=False)
         if iterations >= 20:
             for i in range(1,31):
-                print("sleeping... {}".format(i))
+                print("sleeping... {}/30".format(i))
                 sleep(1)
             iterations = 0
