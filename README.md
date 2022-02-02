@@ -35,6 +35,7 @@ Palavras que não têm ao menos uma opção de tradução no Reverso Context ser
     - Adicionar opções de línguas de acordo com os idiomas disponíveis no Context Reverso
     	- Incluir tais opções no prompt
     - **Por algum motivo algumas traduçoes estao indo para as mesmas celulas que as frases-exemplo nao-traduzidas. Isso precisa ser corrigido.**	
+    	- Uma boa ideia é separas as listas de traduções e de exemplos
 
 ----
 
