@@ -34,6 +34,7 @@ Palavras que não têm ao menos uma opção de tradução no Reverso Context ser
     - Transformar em função também as partes que convertem os DataFrames em .csv
     - Adicionar opções de línguas de acordo com os idiomas disponíveis no Context Reverso
     	- Incluir tais opções no prompt
+    - **Por algum motivo algumas traduçoes estao indo para as mesmas celulas que as frases-exemplo nao-traduzidas. Isso precisa ser corrigido.**	
 
 ----
 
