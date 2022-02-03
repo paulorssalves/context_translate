@@ -6,7 +6,7 @@ Um script para, de uma lista .csv, pegar palavras e frases em contexto e suas re
 
 Input:
 
-| palavras iniciais |
+| Palavras-base |
 |---|
 | предложение |
 | достаточно|
