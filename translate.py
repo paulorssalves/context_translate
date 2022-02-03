@@ -38,10 +38,5 @@ if __name__ == "__main__":
             word_data = get_word_data(word, 3, 3)
             if word_data == False: # retorna falso quando não há exemplo objetivo de tradução (mesmo havendo exemplos em frases; isso é feito por medida de segurança)
                 continue
-                """
-                *AFAZERES*:
-                    - inserir dados do wiktionary se eles existirem, quando word_data = False em `translate.py`
-                    - verificar a possibilidade de procurar exemplos de frases *mesmo se* não houver traduções objetivas. Para isso é necessário verificar alguns 
-                """
             df = produce_dataframe(word_data)
             append_to_csv(df, OUTPUT_FILE)
