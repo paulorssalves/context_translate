@@ -1,23 +1,21 @@
 from reverso_context_api import Client
-from wiktionaryparser import WiktionaryParser
 import itertools as itt
-from words import Word
 import pandas as pd
 
-INPUT_LANGUAGE="ru", "Russian"
+INPUT_LANGUAGE="de", "Deutsch"
 OUTPUT_LANGUAGE="en", "English"
 
 client = Client(INPUT_LANGUAGE[0], OUTPUT_LANGUAGE[0])
 
 def get_translations(word, example_number):
-    translation_list = list(client.get_translations(word, 
+    translation_list = list(client.get_translations(word.lower(), 
     source_lang=INPUT_LANGUAGE[0], target_lang=OUTPUT_LANGUAGE[0]))[:example_number]
     return translation_list
 
 def get_phrases_from_word(word, example_number, 
     group_languages=True):
 
-    phrase_list = list(itt.islice(client.get_translation_samples(word, cleanup=True, 
+    phrase_list = list(itt.islice(client.get_translation_samples(word.lower(), cleanup=True, 
     source_lang=INPUT_LANGUAGE[0], 
     target_lang=OUTPUT_LANGUAGE[0]), example_number))
 
@@ -36,31 +34,16 @@ def get_phrases_from_word(word, example_number,
         return phrase_list
 
 def get_word_data(word, translation_number, example_number):
-    translations = get_translations(word, translation_number)
+    translations = get_translations(word.lower(), translation_number)
     if translations == []:
         return False
     else: 
         data =  {
-            "name": word,
+            "name": word.lower(),
             "translations": translations, 
-            "examples": get_phrases_from_word(word, example_number) 
+            "examples": get_phrases_from_word(word.lower(), example_number) 
             } 
         return data
-
-def get_word_fallback(word):
-    """
-    No caso de a palavra não ser encontrada no Context Reverso
-    Pelo menos pode-se tentar encontrar alguma palavra
-    relacionada mais comum no Wiktionary, e daí
-    produzir uma lista de repescagem.
-    """
-    word = Word(word)
-    word_data = {
-        "name": word.name,
-        "data": word.get_text()[0][0],
-        "definitions": [item for item in word.get_text()[0][1:]]
-    }
-    return word_data
 
 def fetch_element_as_string(dict, element):
     """
