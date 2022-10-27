@@ -2,22 +2,24 @@ from reverso_context_api import Client
 import itertools as itt
 import pandas as pd
 
-INPUT_LANGUAGE="de", "Deutsch"
-OUTPUT_LANGUAGE="en", "English"
+INPUT_LANGUAGE="en", "English"
+OUTPUT_LANGUAGE="pt", "Portuguese"
 
 client = Client(INPUT_LANGUAGE[0], OUTPUT_LANGUAGE[0])
 
 def get_translations(word, example_number):
     translation_list = list(client.get_translations(word.lower(), 
-    source_lang=INPUT_LANGUAGE[0], target_lang=OUTPUT_LANGUAGE[0]))[:example_number]
+                            source_lang=INPUT_LANGUAGE[0], 
+                            target_lang=OUTPUT_LANGUAGE[0]))[:example_number]
+
     return translation_list
 
 def get_phrases_from_word(word, example_number, 
     group_languages=True):
 
     phrase_list = list(itt.islice(client.get_translation_samples(word.lower(), cleanup=True, 
-    source_lang=INPUT_LANGUAGE[0], 
-    target_lang=OUTPUT_LANGUAGE[0]), example_number))
+                    source_lang=INPUT_LANGUAGE[0], 
+                    target_lang=OUTPUT_LANGUAGE[0]), example_number))
 
     if group_languages is True:
         input_language_example_list = []
@@ -58,14 +60,14 @@ def fetch_element_as_string(dict, element):
         for index in range(len(dict[element])):
             output += dict[element][index]
             if index < len(dict[element]) - 1:
-                output+="\n\n"
+                output+="<br><br>"
         return output
     elif (element == "input phrases") or (element == "output phrases"):
         output = ""
         for index in range(len(dict["examples"][element])):
             output += dict["examples"][element][index]
             if index < len(dict["examples"][element]) - 1:
-                output+="\n\n"
+                output+="<br><br>"
         return output
     else:
         return "Não há tal elemento."
