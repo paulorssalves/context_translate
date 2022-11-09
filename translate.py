@@ -1,6 +1,6 @@
 from tools import (get_word_data, 
                    produce_dataframe, append_to_csv)
-import time, random
+import time, random, datetime, sys
 import readline
 import pandas as pd
 
@@ -15,8 +15,13 @@ readline.parse_and_bind("tab: complete")
 # arquivos de entrada e saída
 #INPUT_FILE=input("Insira o nome do arquivo de entrada: ")
 #OUTPUT_FILE=input("Insira o nome do arquivo de saída: ")
+
 INPUT_FILE="words.csv"
-OUTPUT_FILE="material.csv"
+
+if sys.argv[1]:
+    INPUT_FILE = str(sys.argv[1])
+
+OUTPUT_FILE = datetime.datetime.now().strftime("%Y%m%d%H%M%S")+".csv"
 
 # arquivo a ser lido
 f = pd.read_csv(INPUT_FILE, header=None, names=['word(s)'])
