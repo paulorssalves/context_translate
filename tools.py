@@ -8,22 +8,34 @@ OUTPUT_LANGUAGE="pt", "Portuguese"
 client = Client(INPUT_LANGUAGE[0], OUTPUT_LANGUAGE[0])
 
 def get_translations(word, example_number):
+    """
+    Extrai traduções da palavra (String) direto do Reverso Context.
+    O número de traduções corresponde ao (Inteiro) "example_number"
+    """
     translation_list = list(client.get_translations(word.lower(), 
                             source_lang=INPUT_LANGUAGE[0], 
                             target_lang=OUTPUT_LANGUAGE[0]))[:example_number]
 
     return translation_list
 
-def get_phrases_from_word(word, example_number, 
-    group_languages=True):
-
+def get_phrases_from_word(word, example_number, group_languages=True):
+    """
+    Extrai do Reverso Context frases (e traduções destas) que 
+    contextualizam a palavra escolhida. A opção "group_languages=True" 
+    separa as frases por língua (de modo que se temos 6 frases, 
+    3 em língua estrangeira (E) e 3 na língua que conhecemos (C), elas virão
+    agrupadas por idioma, e não por correspondência): EEE-CCC. "group_languages=False"
+    resultaria em frases intercaladas: EC-EC-EC
+    """
     phrase_list = list(itt.islice(client.get_translation_samples(word.lower(), cleanup=True, 
                     source_lang=INPUT_LANGUAGE[0], 
                     target_lang=OUTPUT_LANGUAGE[0]), example_number))
 
     if group_languages is True:
+
         input_language_example_list = []
         output_language_example_list = []
+
         for group in phrase_list:
             input_language_example_list.append(group[0])
             output_language_example_list.append(group[1])
@@ -36,6 +48,12 @@ def get_phrases_from_word(word, example_number,
         return phrase_list
 
 def get_word_data(word, translation_number, example_number):
+    """
+    Adquire os dados relacionados à palavra inserida, isto é,
+    suas traduções e exemplos dela em contexto. O número de traduções
+    e de frases contextualizantes são definidos, respectivamente,
+    pelos parâmetros "translation_number" e "example_number"
+    """
     translations = get_translations(word.lower(), translation_number)
     if translations == []:
         return False
@@ -70,10 +88,14 @@ def fetch_element_as_string(dict, element):
                 output+="<br><br>"
         return output
     else:
-        return "Não há tal elemento."
+        return "There is no such element."
 
-def produce_dataframe(dict):
-    data = dict
+def produce_dataframe(dictionary):
+    """
+    produz um dataframe separando palavras da seguinte forma:
+    PALAVRA ORIGINAL | TRADUÇÕES | EXEMPLOS NA LÍNGUA ESTRANGEIRA | EXEMPLOS TRADUZIDOS
+    """
+    data = dictionary
     final_dictionary = {
         "name": fetch_element_as_string(data, "name"),
         "traduções": fetch_element_as_string(data, "translations"),
@@ -85,4 +107,11 @@ def produce_dataframe(dict):
 
 
 def append_to_csv(DataFrame, OUTPUT_FILE_NAME):
+    """
+    Incrementa o dataframe a um .csv. Isso impede que qualquer progresso
+    seja perdido caso por algum motivo o programa encontra um erro. A alternativa
+    seria criar o .csv apenas quando o programa terminar de rodar, mas aí
+    todos os dados seriam perdidos no caso de um erro.
+    """
     DataFrame.to_csv(OUTPUT_FILE_NAME, encoding="utf-8", mode="a", header=False, index=False)
+    

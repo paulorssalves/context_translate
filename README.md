@@ -2,7 +2,30 @@
 	
 Um script para, de uma lista .csv, pegar palavras e frases em contexto e suas respectivas traduções e enviar para outra lista .csv. 
 
-## Exemplo
+## Dependências
+
+- pandas
+- [Reverso Context API](https://github.com/flagist0/reverso_context_api)
+
+## Exemplos
+
+### Como iniciar o programa
+
+O programa toma como padrão a presença de um arquivo de input denominado `words.csv` na mesma pasta em que ele se encontra. Todavia, este pode ser substituído por um outro arquivo .csv da sua escolha. Exemplos:
+
+>python translate.py
+
+Válido. Toma `words.csv` como input.
+
+>python translate.py palavras.csv
+
+Válido. Toma `palavras.csv` como input
+
+>python translate.py palavras.csv termos.csv
+
+Inválido. Até o presente momento o programa só pode interagir com um arquivo .csv de cada vez.
+
+### Exemplo de input-output
 
 Input:
 
@@ -25,7 +48,7 @@ Output:
 
 ## Adendos
 
-Palavras que não têm ao menos uma opção de tradução no Reverso Context serão procuradas no Wiktionary e colocadas junto de suas definições em uma arquivo .csv alternativo. A cada 20 palavras, haverá um intervalo de 30 segundos para evitar que os servidores bloqueiem o IP do usuário por excesso de requests. Os exemplos são do russo para o inglês pois (1) no momento em que estou desenvolvendo este programa estou no processo de aprender russo e (2) pois inglês é a língua com maior número de resultados no dicionário utilizado. 
+Não altere o intervalo entre requests feitas ao servidor. Há um intervalo de 5 segundos + um time.sleep() aleatório de duração < 1 segundo. O propósito disso é manter o comportamento do padrão dentro das exigências do servidor. Diminuir o intervalo pode resultar em banimento do site, o que inutiliza o programa.
 
 ## Línguas disponíveis
 
@@ -34,10 +57,11 @@ Russo e inglês **não** são as únicas línguas disponíveis. Basta trocar as 
 ## Afazeres
 
   - Exception Handling -- Duas alternativas:
-      1. Quando houver uma palavra que não tem pelo menos três exemplos, pegar o HTTPError e pedir por apenas um exemplo
-      2. Usar threading. Se uma resposta demorar demais, de alguma forma cancelar o pedido e ir para a próxima, ou pedir apenas um exemplo.
+      1. Usar threading. Se uma resposta demorar demais, de alguma forma cancelar o pedido e ir para a próxima, ou pedir apenas um exemplo.
   - Enxugar código:
-    - Adicionar opções de línguas de acordo com os idiomas disponíveis no Context Reverso
+    - Adicionar opções de línguas de forma explícita, de acordo com os idiomas disponíveis no Context Reverso
     	- Incluir tais opções no prompt
-  - inserir dados do wiktionary se eles existirem, quando `word_data = False` em `translate.py`
+  - ~inserir dados do wiktionary se eles existirem, quando `word_data = False` em `translate.py`~
   - verificar a possibilidade de procurar exemplos de frases *mesmo se* não houver traduções objetivas. Para isso é necessário verificar a funcionalidade das exception handlings do primeiro ponto desta lista. 
+
+
