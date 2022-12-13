@@ -3,19 +3,18 @@ import itertools as itt
 import pandas as pd
 import sys, time, random
 
-INPUT_LANGUAGE="en", "English"
-OUTPUT_LANGUAGE="pt", "Portuguese"
-
-client = Client(INPUT_LANGUAGE[0], OUTPUT_LANGUAGE[0])
+LANGUAGE_TUPLE = ("en", "pt")
+client = Client(LANGUAGE_TUPLE[0], LANGUAGE_TUPLE[1])
 
 def get_translations(word, example_number):
+
     """
     Extrai traduções da palavra (String) direto do Reverso Context.
     O número de traduções corresponde ao (Inteiro) "example_number"
     """
     translation_list = list(client.get_translations(word.lower(), 
-                            source_lang=INPUT_LANGUAGE[0], 
-                            target_lang=OUTPUT_LANGUAGE[0]))[:example_number]
+                            source_lang=LANGUAGE_TUPLE[0], 
+                            target_lang=LANGUAGE_TUPLE[1]))[:example_number]
 
     return translation_list
 
@@ -28,9 +27,11 @@ def get_phrases_from_word(word, example_number, group_languages=True):
     agrupadas por idioma, e não por correspondência): EEE-CCC. "group_languages=False"
     resultaria em frases intercaladas: EC-EC-EC
     """
-    phrase_list = list(itt.islice(client.get_translation_samples(word.lower(), cleanup=True, 
-                    source_lang=INPUT_LANGUAGE[0], 
-                    target_lang=OUTPUT_LANGUAGE[0]), example_number))
+    phrase_list = list(itt.islice(client.get_translation_samples(word.lower(), 
+        cleanup=True, 
+        source_lang=LANGUAGE_TUPLE[0], 
+        target_lang=LANGUAGE_TUPLE[1]), 
+        example_number))
 
     if group_languages is True:
 
@@ -55,14 +56,14 @@ def get_word_data(word, translation_number, example_number):
     e de frases contextualizantes são definidos, respectivamente,
     pelos parâmetros "translation_number" e "example_number"
     """
-    translations = get_translations(word.lower(), translation_number)
+    translations = get_translations(word.lower(), translation_number, LANGUAGE_TUPLE)
     if translations == []:
         return False
     else: 
         data =  {
             "name": word.lower(),
             "translations": translations, 
-            "examples": get_phrases_from_word(word.lower(), example_number) 
+            "examples": get_phrases_from_word(word.lower(), example_number, LANGUAGE_TUPLE)
             } 
         return data
 

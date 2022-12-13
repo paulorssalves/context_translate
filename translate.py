@@ -1,13 +1,13 @@
 from tools import (get_word_data, 
                    produce_dataframe, append_to_csv,
                    time_log, progress)
-import time, random, datetime, sys
+import datetime, sys
 import readline
 import pandas as pd
 
 # Variáveis numéricas
 TRANSLATION_NUMBER = 3
-EXAMPLE_NUMBER = TRANSLATION_NUMBER
+EXAMPLE_NUMBER = 3 
 WAIT_TIME=5
 
 # filename autocompletion
@@ -33,9 +33,10 @@ REQUEST_NUMBER = len(f)
 head = f.head(REQUEST_NUMBER)
 
 if __name__ == "__main__":
-    wordlist = list(head.iteritems())[0][1]
-    for index in range(len(wordlist)):
 
+    wordlist = list(head.iteritems())[0][1]
+
+    for index in range(len(wordlist)):
         word_data = get_word_data(wordlist[index], TRANSLATION_NUMBER, EXAMPLE_NUMBER)
 
         if word_data == False: # retorna falso quando não há exemplo objetivo de tradução (mesmo havendo exemplos em frases; isso é feito por medida de segurança)
@@ -43,8 +44,8 @@ if __name__ == "__main__":
             continue
 
         progress(index+1, REQUEST_NUMBER, "{} ({}/{})".format(word_data["name"], index+1, REQUEST_NUMBER))
-        time_log(WAIT_TIME) 
 
         df = produce_dataframe(word_data)
         append_to_csv(df, OUTPUT_FILE)
 
+        time_log(WAIT_TIME) 
