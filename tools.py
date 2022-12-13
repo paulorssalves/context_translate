@@ -56,14 +56,14 @@ def get_word_data(word, translation_number, example_number):
     e de frases contextualizantes são definidos, respectivamente,
     pelos parâmetros "translation_number" e "example_number"
     """
-    translations = get_translations(word.lower(), translation_number, LANGUAGE_TUPLE)
+    translations = get_translations(word.lower(), translation_number)
     if translations == []:
         return False
     else: 
         data =  {
             "name": word.lower(),
             "translations": translations, 
-            "examples": get_phrases_from_word(word.lower(), example_number, LANGUAGE_TUPLE)
+            "examples": get_phrases_from_word(word.lower(), example_number)
             } 
         return data
 
