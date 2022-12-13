@@ -6,19 +6,23 @@ import sys, time, random
 LANGUAGE_TUPLE = ("en", "pt")
 client = Client(LANGUAGE_TUPLE[0], LANGUAGE_TUPLE[1])
 
-def get_translations(word, example_number):
+def get_translations(word, example_number, LANGUAGES=None):
 
     """
     Extrai traduções da palavra (String) direto do Reverso Context.
     O número de traduções corresponde ao (Inteiro) "example_number"
     """
+    global LANGUAGE_TUPLE
+    if LANGUAGES != None:
+        LANGUAGE_TUPLE = LANGUAGES
+
     translation_list = list(client.get_translations(word.lower(), 
                             source_lang=LANGUAGE_TUPLE[0], 
                             target_lang=LANGUAGE_TUPLE[1]))[:example_number]
 
     return translation_list
 
-def get_phrases_from_word(word, example_number, group_languages=True):
+def get_phrases_from_word(word, example_number, group_languages=True, LANGUAGES=None):
     """
     Extrai do Reverso Context frases (e traduções destas) que 
     contextualizam a palavra escolhida. A opção "group_languages=True" 
@@ -27,45 +31,51 @@ def get_phrases_from_word(word, example_number, group_languages=True):
     agrupadas por idioma, e não por correspondência): EEE-CCC. "group_languages=False"
     resultaria em frases intercaladas: EC-EC-EC
     """
+    global LANGUAGE_TUPLE
+    if LANGUAGES != None:
+        LANGUAGE_TUPLE = LANGUAGES
+
     phrase_list = list(itt.islice(client.get_translation_samples(word.lower(), 
         cleanup=True, 
         source_lang=LANGUAGE_TUPLE[0], 
         target_lang=LANGUAGE_TUPLE[1]), 
         example_number))
 
-    if group_languages is True:
-
-        input_language_example_list = []
-        output_language_example_list = []
-
-        for group in phrase_list:
-            input_language_example_list.append(group[0])
-            output_language_example_list.append(group[1])
-        
-        phrase_dict = {"input phrases": input_language_example_list,
-                       "output phrases": output_language_example_list}
-
-        return phrase_dict
-    else:
+    if group_languages is False:
         return phrase_list
 
-def get_word_data(word, translation_number, example_number):
+    input_language_example_list = []
+    output_language_example_list = []
+
+    for group in phrase_list:
+        input_language_example_list.append(group[0])
+        output_language_example_list.append(group[1])
+    
+    phrase_dict = {"input phrases": input_language_example_list,
+                   "output phrases": output_language_example_list}
+
+    return phrase_dict
+
+def get_word_data(word, translation_number, example_number, LANGUAGES=None):
     """
     Adquire os dados relacionados à palavra inserida, isto é,
     suas traduções e exemplos dela em contexto. O número de traduções
     e de frases contextualizantes são definidos, respectivamente,
     pelos parâmetros "translation_number" e "example_number"
     """
-    translations = get_translations(word.lower(), translation_number)
+
+    translations = get_translations(word.lower(), translation_number, LANGUAGES)
+
     if translations == []:
         return False
-    else: 
-        data =  {
-            "name": word.lower(),
-            "translations": translations, 
-            "examples": get_phrases_from_word(word.lower(), example_number)
-            } 
-        return data
+
+    data =  {
+        "name": word.lower(),
+        "translations": translations, 
+        "examples": get_phrases_from_word(word.lower(), example_number, LANGUAGES)
+        } 
+
+    return data
 
 def fetch_element_as_string(dict, element):
     """
