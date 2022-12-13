@@ -1,6 +1,7 @@
 from reverso_context_api import Client
 import itertools as itt
 import pandas as pd
+import sys, time, random
 
 INPUT_LANGUAGE="en", "English"
 OUTPUT_LANGUAGE="pt", "Portuguese"
@@ -115,3 +116,21 @@ def append_to_csv(DataFrame, OUTPUT_FILE_NAME):
     """
     DataFrame.to_csv(OUTPUT_FILE_NAME, encoding="utf-8", mode="a", header=False, index=False)
     
+def time_log(DURATION):
+    sys.stdout.write("\n")
+    for second in range(DURATION):
+        sys.stdout.write('Wait... %s/%s\r' % (second+1, DURATION))
+        time.sleep(1)
+        sys.stdout.flush()
+    time.sleep(random.random())
+
+def progress (count, total, suffix=""):
+    # taken from Vladmir Ignatev on GitHub
+    bar_len = 60
+    filled_len = int(round(bar_len * count / float (total)))
+
+    percents = round(100.0 * count / float(total), 1)
+    bar = "=" * filled_len + '-' * (bar_len - filled_len)
+
+    sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', suffix))
+    sys.stdout.flush() # as suggested by Rom Ruben

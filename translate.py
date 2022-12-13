@@ -1,5 +1,6 @@
 from tools import (get_word_data, 
-                   produce_dataframe, append_to_csv)
+                   produce_dataframe, append_to_csv,
+                   time_log, progress)
 import time, random, datetime, sys
 import readline
 import pandas as pd
@@ -32,19 +33,18 @@ REQUEST_NUMBER = len(f)
 head = f.head(REQUEST_NUMBER)
 
 if __name__ == "__main__":
-    for cell in head.iteritems():
-        for word in cell[1]:
-            print(word)
-            word_data = get_word_data(word, TRANSLATION_NUMBER, EXAMPLE_NUMBER)
-            for sec in range(1,WAIT_TIME+1):
-                if sec == WAIT_TIME:
-                    print(f"wait... {sec}/5")
-                    time.sleep(1+(2*random.random()))
-                else:
-                    print(f"wait... {sec}/5")
-                    time.sleep(1)
-            if word_data == False: # retorna falso quando não há exemplo objetivo de tradução (mesmo havendo exemplos em frases; isso é feito por medida de segurança)
-                continue
-            df = produce_dataframe(word_data)
-            append_to_csv(df, OUTPUT_FILE)
+    wordlist = list(head.iteritems())[0][1]
+    for index in range(len(wordlist)):
+
+        word_data = get_word_data(wordlist[index], TRANSLATION_NUMBER, EXAMPLE_NUMBER)
+
+        if word_data == False: # retorna falso quando não há exemplo objetivo de tradução (mesmo havendo exemplos em frases; isso é feito por medida de segurança)
+            print ("Sem traduções disponíveis para \"{}\". Pulando...".format(wordlist[index]))
+            continue
+
+        progress(index+1, REQUEST_NUMBER, "{} ({}/{})".format(word_data["name"], index+1, REQUEST_NUMBER))
+        time_log(WAIT_TIME) 
+
+        df = produce_dataframe(word_data)
+        append_to_csv(df, OUTPUT_FILE)
 
