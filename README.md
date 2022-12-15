@@ -52,7 +52,7 @@ Não altere o intervalo entre requests feitas ao servidor. Há um intervalo de 5
 
 ## Línguas disponíveis
 
-Russo e inglês **não** são as únicas línguas disponíveis. Basta trocar as configurações para a língua desejada, desde que a opção desta língua exista no Context Reverso. Basta ir em `tools.py` *e* em `words.py` e trocar para as línguas desejadas as variáveis `INPUT_LANGUAGE` e `OUTPUT_LANGUAGE`. 
+Russo e inglês **não** são as únicas línguas disponíveis. Basta trocar as configurações para a língua desejada, desde que a opção desta língua exista no Context Reverso. Basta ir em `tools.py` e trocar para as línguas desejadas o par de variáveis em `LANGUAGE_TUPLE`. O primeiro item é a SOURCE LANGUAGE, ou a língua _de que_ se traduz, e o segundo item é a TARGET LANGUAGE, ou a língua _para qual_ se traduz.
 
 ## Afazeres
 
