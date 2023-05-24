@@ -34,7 +34,7 @@ head = f.head(REQUEST_NUMBER)
 
 if __name__ == "__main__":
 
-    wordlist = list(head.iteritems())[0][1]
+    wordlist = list(head.items())[0][1]
 
     for index in range(len(wordlist)):
         word_data = get_word_data(wordlist[index], TRANSLATION_NUMBER, EXAMPLE_NUMBER)
