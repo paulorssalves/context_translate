@@ -47,5 +47,10 @@ if __name__ == "__main__":
 
         df = produce_dataframe(word_data)
         append_to_csv(df, OUTPUT_FILE)
+        
+        if index != len(wordlist) - 1:
+            time_log(WAIT_TIME) 
 
-        time_log(WAIT_TIME) 
+    f = open("/home/paulo/.cache/ctrans.log", "w")
+    f.write(OUTPUT_FILE+"\n")
+    f.close()
